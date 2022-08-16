@@ -119,7 +119,15 @@ namespace Core.Shared {
             try {
                 return double.Parse(json[needle].ToString());
             } catch {
-                return null;
+                return default(double);
+            }
+        }
+
+        public static long? findLongNumber(JObject json, string needle) {
+            try {
+                return long.Parse(json[needle].ToString());
+            } catch {
+                return default(long);
             }
         }
 
