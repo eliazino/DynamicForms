@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B72783EF-8072-41F2-BBCD-4E18067CE0C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{86D2E4CE-7C41-418C-A9FA-6476293FB45B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{BEAD2F66-9EDC-4D31-998D-0C2C642B9DEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B72783EF-8072-41F2-BBCD-4E18067CE0C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B72783EF-8072-41F2-BBCD-4E18067CE0C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B72783EF-8072-41F2-BBCD-4E18067CE0C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B72783EF-8072-41F2-BBCD-4E18067CE0C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86D2E4CE-7C41-418C-A9FA-6476293FB45B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86D2E4CE-7C41-418C-A9FA-6476293FB45B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86D2E4CE-7C41-418C-A9FA-6476293FB45B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86D2E4CE-7C41-418C-A9FA-6476293FB45B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEAD2F66-9EDC-4D31-998D-0C2C642B9DEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEAD2F66-9EDC-4D31-998D-0C2C642B9DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEAD2F66-9EDC-4D31-998D-0C2C642B9DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEAD2F66-9EDC-4D31-998D-0C2C642B9DEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B2AE619E-51F8-470A-A743-67893CF137BE}
+	EndGlobalSection
+EndGlobal
