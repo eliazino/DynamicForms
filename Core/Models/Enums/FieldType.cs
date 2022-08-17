@@ -16,6 +16,9 @@ namespace Core.Models.Enums {
         UNIQUE = 1,
         AUTO_GENERATED_ID = 3,
         AUTO_GENERATED_DATE = 4,
-        REQUIRED = 5
+        REQUIRED = 5,
+        FILTERABLE_INPUT = 6,
+        FILTERABLE_DROPDOWN = 7,
+        FILTERABLE_DATE_RANGE = 8
     }
 }
