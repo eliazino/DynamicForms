@@ -9,9 +9,5 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NetCore.AutoRegisterDi" Version="2.1.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Application\Interfaces\UseCases\" />
-    <Folder Include="Application\Services\UseCases\" />
-  </ItemGroup>
 
 </Project>
