@@ -17,12 +17,13 @@ namespace Core.Models.Entities {
             this.id = Cryptography.CharGenerator.genID(8, Cryptography.CharGenerator.characterSet.HEX_STRING);
             schemaID = schema.id;
             projectID = schema.projectID;
-            foreach(SchemaField field in schema.SchemaField) {
-                if ((bool)field.behavior?.Contains(Enums.FieldBehaviour.AUTO_GENERATED_DATE)) {
-                    data.Add(field.fieldID, Utilities.getTodayDate().modernDate.ToString());
+            this.data = new Dictionary<string, dynamic>();
+            foreach (SchemaField field in schema.SchemaField) {
+                if ((bool)field.behavior?.Contains(FieldBehaviour.AUTO_GENERATED_DATE)) {
+                    data.Add(field.fieldID, Utilities.getTodayDate().modernDate);
                     continue;
                 }
-                if ((bool)field.behavior?.Contains(Enums.FieldBehaviour.AUTO_GENERATED_ID)) {
+                if ((bool)field.behavior?.Contains(FieldBehaviour.AUTO_GENERATED_ID)) {
                     data.Add(field.fieldID, Cryptography.CharGenerator.genID(8, Cryptography.CharGenerator.characterSet.HEX_STRING));
                     continue;
                 }
@@ -40,7 +41,7 @@ namespace Core.Models.Entities {
                 if (field.behavior.Contains(FieldBehaviour.REQUIRED))
                     if (fdata == getDefaultValue(t))
                         throw new InputError("Field "+field.fieldName+" is a required field of type "+field.fieldType.ToString());
-                data.Add(field.fieldName, fdata);
+                data.Add(field.fieldID, fdata);
             }
         }
         public FormData() {
