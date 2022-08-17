@@ -1,5 +1,6 @@
 ﻿using Core.Application.Interfaces.Repository.MongoDB;
 using Core.Models.Entities;
+using Core.Models.ValueObjects;
 using Infrastructure.Persistence;
 using NetCore.AutoRegisterDi;
 using System;
@@ -29,7 +30,11 @@ namespace Infrastructure.Repository.MongoDB {
         public async Task<List<FormData>> getFormData(string schemaID, List<KeyValuePair<string, dynamic>> field) {
             var data = await this.getFormData(schemaID);
             foreach(KeyValuePair<string, dynamic> search in field) {
-                data = data.FindAll(G => G.data[search.Key] == search.Value);
+                if(search.Value.GetType() == typeof(DateFilter)) {
+                    data = data.FindAll(G => G.data[search.Key] >= ((DateFilter)search.Value).dateFrom && G.data[search.Key] <= ((DateFilter)search.Value).dateTo);
+                } else {
+                    data = data.FindAll(G => G.data[search.Key] == search.Value);
+                }                
             }
             return data;
         }
