@@ -24,6 +24,6 @@ namespace Core.Application.DTOs.Request {
 
     public class FilterElement {
         public string fieldID { get; set; }
-        public string value { get; set; } 
+        public dynamic value { get; set; } 
     }
 }
