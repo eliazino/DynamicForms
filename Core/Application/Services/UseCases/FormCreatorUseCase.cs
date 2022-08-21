@@ -121,7 +121,7 @@ namespace Core.Application.Services.UseCases {
         }
         public async Task<RawResponse> getSchemaByProject(string projectID) {
             ResponseFormat response = new ResponseFormat();
-            return response.success("Grabbed", new { data = await _schema.getSchemaByProject(projectID) });
+            return response.success("Grabbed", new { schema = await _schema.getSchemaByProject(projectID) });
         }
 
         public Task<RawResponse> lockSchema(SchemaDTO dto) {
