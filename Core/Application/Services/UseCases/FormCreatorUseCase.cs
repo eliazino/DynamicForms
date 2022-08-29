@@ -75,6 +75,13 @@ namespace Core.Application.Services.UseCases {
         public async Task<RawResponse> createSchema(SchemaDTO dto) {
             ResponseFormat response = new ResponseFormat();
             var entity = new Schema(dto);
+            if (!string.IsNullOrEmpty(dto.id)){
+                var schemaEnt = await _schema.getSchemaById(dto.schemaID);
+                if (schemaEnt != null && schemaEnt.Count > 0)
+                    schemaEnt[0].updateSchema(dto);
+                await _schema.updateSchema(schemaEnt[0]);
+                return response.success("Schema has been updated!");
+            }
             if (await _schema.createSchema(entity))
                 return response.success("Created Successfully", new { schema = entity });
             return response.failed("Could not create Schema");
@@ -97,6 +104,8 @@ namespace Core.Application.Services.UseCases {
                 return response.failed("Schema Was not found");
             var schemaData = schema[0];
             for(int f = 0; f < schemaData.SchemaField.Count; f++) {
+                if (string.IsNullOrEmpty(schemaData.SchemaField[f].dataSource))
+                    continue;
                 schemaData.SchemaField[f].data = await getDropDown(schemaData.SchemaField[f].dataSource);
             }
             var filterData = await _filterEnt.get(schemaID);
