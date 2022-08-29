@@ -9,6 +9,7 @@ using Core.Shared;
 using NetCore.AutoRegisterDi;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Core.Application.DTOs.Response.ResponseFormat;
@@ -107,10 +108,37 @@ namespace Core.Application.Services.UseCases {
                 if (string.IsNullOrEmpty(schemaData.SchemaField[f].dataSource))
                     continue;
                 schemaData.SchemaField[f].data = await getDropDown(schemaData.SchemaField[f].dataSource);
-            }
-            var filterData = await _filterEnt.get(schemaID);
-            return response.success("Grabbed", new { schema = schemaData, unSortedFilterData = filterData });
+            }            
+            return response.success("Grabbed", new { schema = schemaData });
         }
+        public async Task<RawResponse> getFilterSchemaByID(string schemaID) {
+            ResponseFormat response = new ResponseFormat();
+            var schema = await _schema.getSchemaById(schemaID);
+            if (schema.Count < 1)
+                return response.failed("Schema Was not found");
+            var filterData = await _filterEnt.get(schemaID);
+            var schemaData = schema[0];
+            List<FieldBehaviour> desirableBehaviours = new List<FieldBehaviour>() { FieldBehaviour.FILTERABLE_DATE_RANGE, FieldBehaviour.FILTERABLE_DROPDOWN, FieldBehaviour.FILTERABLE_INPUT };
+            SchemaDTO sdto = new SchemaDTO();
+            sdto.id = schemaData.id;
+            sdto.projectID = schemaData.projectID;
+            sdto.schemaID = schemaData.id;
+            sdto.schemaName = schemaData.schemaName;
+            sdto.SchemaField = new List<SchemaField>();
+            for (int f = 0; f < schemaData.SchemaField.Count; f++) {
+                var behaviours = (from sfd in schemaData.SchemaField[f].behavior
+                           where desirableBehaviours.Contains(sfd)
+                           select sfd);
+                if (behaviours != null && behaviours.Count() > 0){
+                    var schemaField = schemaData.SchemaField[f];
+                    var filtersField = (from ff in filterData where filterData.Any(F => F.fieldID == schemaField.fieldID) select ff.fieldValue);
+                    schemaField.data = filtersField?.ToArray();
+                    sdto.SchemaField.Add(schemaField);
+                }                   
+            }
+            return response.success("Grabbed", new { schema = sdto });
+        }
+
         private async Task<string[]> getDropDown(string dataSource) {
             if (string.IsNullOrEmpty(dataSource))
                 return new string[] { };
