@@ -35,7 +35,7 @@ namespace Infrastructure.Repository.MongoDB {
 
         public async Task<bool> updateSchema(Schema schema) {
             Expression<Func<Schema, bool>> condition = F => F.id == schema.id;
-            return await update(new { SchemaField = schema.SchemaField }, condition);
+            return await update(new { schemaName = schema.schemaName, SchemaField = schema.SchemaField }, condition);
         }
     }
 }
