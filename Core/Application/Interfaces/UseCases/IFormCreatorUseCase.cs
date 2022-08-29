@@ -14,6 +14,7 @@ namespace Core.Application.Interfaces.UseCases {
         Task<RawResponse> createSchema(SchemaDTO dto);        
         Task<RawResponse> lockSchema(SchemaDTO dto);
         Task<RawResponse> getSchemaByID(string schemaID);
+        Task<RawResponse> getFilterSchemaByID(string schemaID);
         Task<RawResponse> getSchemaByProject(string projectID);
         Task<RawResponse> addData(FormDataDTO dto);
         Task<RawResponse> getData(DataFilterDTO filter);

@@ -95,6 +95,16 @@ namespace WebAPI.Controllers {
             }
         }
 
+        [HttpGet, Route("v1/fetch/filterSchemaByID/{schemaID}")]
+        [Consumes("application/json")]
+        public async Task<IActionResult> fetchFilterSchemaByProject(string schemaID) {
+            try {
+                return new ObjectResult(await _useCase.getFilterSchemaByID(schemaID));
+            } catch (Exception err) {
+                return new ObjectResult(_errHandler.getMessage(err)) { StatusCode = _errHandler.statusCode };
+            }
+        }
+
         [HttpGet, Route("v1/delete/data/{id}")]
         [Consumes("application/json")]
         public async Task<IActionResult> deleteData(string id) {
