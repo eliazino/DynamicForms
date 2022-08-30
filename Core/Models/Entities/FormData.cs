@@ -29,17 +29,21 @@ namespace Core.Models.Entities {
                 }
                 Type t = typeof(double);
                 dynamic fdata;
+                dynamic dataDef;
                 if (field.fieldType.Equals(FieldType.NUMBER)) {
-                    fdata = Utilities.findNumber(dataOb.dataField, field.fieldID);                    
+                    fdata = Utilities.findNumber(dataOb.dataField, field.fieldID);
+                    dataDef = default(double);
                 }else if (field.fieldType.Equals(FieldType.LONG_NUMBER)) {
                     fdata = Utilities.findLongNumber(dataOb.dataField, field.fieldID);
                     t = typeof(long);
-                }else {
+                    dataDef = default(long);
+                } else {
                     fdata = Utilities.findString(dataOb.dataField, field.fieldID);
                     t = typeof(string);
+                    dataDef = default(string);
                 }
                 if (field.behavior.Contains(FieldBehaviour.REQUIRED))
-                    if (fdata == getDefaultValue(t))
+                    if (fdata == dataDef)
                         throw new InputError("Field "+field.fieldName+" is a required field of type "+field.fieldType.ToString());
                 data.Add(field.fieldID, fdata);
             }
