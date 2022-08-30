@@ -12,6 +12,7 @@ namespace Core.Models.Entities {
         public string projectDetails { get; protected set; }
         public long dateCreated { get; protected set; }
         public int status { get; protected set; }
+        public string clientID { get; protected set; }
         public Project(ProjectDTO data) {
             if (isNullOrEmpty(data.projectName, data.projectDetails))
                 throw new InputError("All fields are required");

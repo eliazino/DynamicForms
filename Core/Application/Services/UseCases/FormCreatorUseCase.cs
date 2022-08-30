@@ -77,11 +77,13 @@ namespace Core.Application.Services.UseCases {
             ResponseFormat response = new ResponseFormat();
             var entity = new Schema(dto);
             if (!string.IsNullOrEmpty(dto.id)){
-                var schemaEnt = await _schema.getSchemaById(dto.schemaID);
-                if (schemaEnt != null && schemaEnt.Count > 0)
+                var schemaEnt = await _schema.getSchemaById(dto.id);
+                if (schemaEnt != null && schemaEnt.Count > 0) {
                     schemaEnt[0].updateSchema(dto);
-                await _schema.updateSchema(schemaEnt[0]);
-                return response.success("Schema has been updated!");
+                    await _schema.updateSchema(schemaEnt[0]);
+                    return response.success("Schema has been updated!");
+                }
+                return response.failed("Invalid Schema ID. Schema not found!");
             }
             if (await _schema.createSchema(entity))
                 return response.success("Created Successfully", new { schema = entity });
