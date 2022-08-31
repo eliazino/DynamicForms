@@ -133,7 +133,7 @@ namespace Core.Application.Services.UseCases {
                            select sfd);
                 if (behaviours != null && behaviours.Count() > 0){
                     var schemaField = schemaData.SchemaField[f];
-                    var filtersField = (from ff in filterData where filterData.Any(F => F.fieldID == schemaField.fieldID) select ff.fieldValue);
+                    var filtersField = filterData.FindAll(F => F.fieldID == schemaData.SchemaField[f].fieldID).Select(B=> B.fieldValue);
                     schemaField.data = filtersField?.ToArray();
                     sdto.SchemaField.Add(schemaField);
                 }                   
