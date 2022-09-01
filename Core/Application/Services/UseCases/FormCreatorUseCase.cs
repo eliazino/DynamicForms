@@ -128,19 +128,29 @@ namespace Core.Application.Services.UseCases {
             sdto.schemaName = schemaData.schemaName;
             sdto.SchemaField = new List<SchemaField>();
             for (int f = 0; f < schemaData.SchemaField.Count; f++) {
-                var behaviours = (from sfd in schemaData.SchemaField[f].behavior
-                           where desirableBehaviours.Contains(sfd)
-                           select sfd);
+                var behaviours = getQualified(schemaData.SchemaField[f].behavior, desirableBehaviours);
                 if (behaviours != null && behaviours.Count() > 0){
                     var schemaField = schemaData.SchemaField[f];
-                    var filtersField = filterData.FindAll(F => F.fieldID == schemaData.SchemaField[f].fieldID).Select(B=> B.fieldValue);
-                    schemaField.data = filtersField?.ToArray();
+                    if (behaviours.Contains(FieldBehaviour.FILTERABLE_DROPDOWN)) {
+                        var filtersField = filterData.FindAll(F => F.fieldID == schemaData.SchemaField[f].fieldID).Select(B => B.fieldValue);
+                        schemaField.data = filtersField?.ToArray();
+                    } else {
+                        schemaField.data = new string[] { };
+                    }
                     sdto.SchemaField.Add(schemaField);
                 }                   
             }
             return response.success("Grabbed", new { schema = sdto });
         }
-
+        private List<FieldBehaviour> getQualified(List<FieldBehaviour> have, List<FieldBehaviour> required) {
+            List<FieldBehaviour> qualified = new List<FieldBehaviour>();
+            foreach(FieldBehaviour r in required) {
+                if (have.Contains(r)) {
+                    qualified.Add(r);
+                }
+            }
+            return qualified;
+        }
         private async Task<string[]> getDropDown(string dataSource) {
             if (string.IsNullOrEmpty(dataSource))
                 return new string[] { };
