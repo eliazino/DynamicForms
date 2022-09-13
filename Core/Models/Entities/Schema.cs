@@ -13,6 +13,7 @@ namespace Core.Models.Entities {
         public string projectID { get; protected set; }
         public string schemaName { get; protected set; }
         public bool locked { get; protected set; } = false;
+        public bool visible { get; protected set; } = true;
         public List<SchemaField> SchemaField { get; protected set; }
         public Schema(SchemaDTO data) {
             if (isNullOrEmpty(data.projectID, data.schemaName))

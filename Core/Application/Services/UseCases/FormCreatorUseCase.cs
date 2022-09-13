@@ -77,11 +77,13 @@ namespace Core.Application.Services.UseCases {
             ResponseFormat response = new ResponseFormat();
             var entity = new Schema(dto);
             if (!string.IsNullOrEmpty(dto.id)){
-                var schemaEnt = await _schema.getSchemaById(dto.schemaID);
-                if (schemaEnt != null && schemaEnt.Count > 0)
+                var schemaEnt = await _schema.getSchemaById(dto.id);
+                if (schemaEnt != null && schemaEnt.Count > 0) {
                     schemaEnt[0].updateSchema(dto);
-                await _schema.updateSchema(schemaEnt[0]);
-                return response.success("Schema has been updated!");
+                    await _schema.updateSchema(schemaEnt[0]);
+                    return response.success("Schema has been updated!");
+                }
+                return response.failed("Invalid Schema ID. Schema not found!");
             }
             if (await _schema.createSchema(entity))
                 return response.success("Created Successfully", new { schema = entity });
@@ -126,19 +128,29 @@ namespace Core.Application.Services.UseCases {
             sdto.schemaName = schemaData.schemaName;
             sdto.SchemaField = new List<SchemaField>();
             for (int f = 0; f < schemaData.SchemaField.Count; f++) {
-                var behaviours = (from sfd in schemaData.SchemaField[f].behavior
-                           where desirableBehaviours.Contains(sfd)
-                           select sfd);
+                var behaviours = getQualified(schemaData.SchemaField[f].behavior, desirableBehaviours);
                 if (behaviours != null && behaviours.Count() > 0){
                     var schemaField = schemaData.SchemaField[f];
-                    var filtersField = (from ff in filterData where filterData.Any(F => F.fieldID == schemaField.fieldID) select ff.fieldValue);
-                    schemaField.data = filtersField?.ToArray();
+                    if (behaviours.Contains(FieldBehaviour.FILTERABLE_DROPDOWN)) {
+                        var filtersField = filterData.FindAll(F => F.fieldID == schemaData.SchemaField[f].fieldID).Select(B => B.fieldValue);
+                        schemaField.data = filtersField?.ToArray();
+                    } else {
+                        schemaField.data = new string[] { };
+                    }
                     sdto.SchemaField.Add(schemaField);
                 }                   
             }
             return response.success("Grabbed", new { schema = sdto });
         }
-
+        private List<FieldBehaviour> getQualified(List<FieldBehaviour> have, List<FieldBehaviour> required) {
+            List<FieldBehaviour> qualified = new List<FieldBehaviour>();
+            foreach(FieldBehaviour r in required) {
+                if (have.Contains(r)) {
+                    qualified.Add(r);
+                }
+            }
+            return qualified;
+        }
         private async Task<string[]> getDropDown(string dataSource) {
             if (string.IsNullOrEmpty(dataSource))
                 return new string[] { };
