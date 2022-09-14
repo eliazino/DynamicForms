@@ -28,9 +28,9 @@ namespace Infrastructure.Persistence {
 
         private void configure(DBConfig config) {
             _config = config;
-            string server = string.Concat(config.server, ":", config.port);
+            string server = string.Concat(config.server);
             server = !string.IsNullOrEmpty(config.username) ? string.Concat(config.username, ":", config.password, "@", server) : server;
-            string _connectionString = string.Concat("mongodb://", server);
+            string _connectionString = string.Concat("mongodb+srv://", server);
             _client = new MongoClient(_connectionString);
             _connect();
         }

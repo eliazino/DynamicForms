@@ -110,7 +110,7 @@ namespace Core.Application.Services.UseCases {
                 if (string.IsNullOrEmpty(schemaData.SchemaField[f].dataSource))
                     continue;
                 schemaData.SchemaField[f].data = await getDropDown(schemaData.SchemaField[f].dataSource);
-            }            
+            }
             return response.success("Grabbed", new { schema = schemaData });
         }
         public async Task<RawResponse> getFilterSchemaByID(string schemaID) {
