@@ -16,8 +16,8 @@ namespace Core.Test {
                 projectDetails = "Details"
             };
             Project project = new Project(
-                dto
-                );
+                dto, new Application.DTOs.Local.UserDTO() { }
+                ); ;
             Assert.IsTrue(project.projectName == dto.projectName, "Project Name should be set");
             Assert.IsTrue(project.projectDetails == dto.projectDetails, "Project Details should be set");
             Assert.IsTrue(project.status == 1, "Default status is 1");
@@ -29,7 +29,7 @@ namespace Core.Test {
                 projectName = "Sample"
             };
             Assert.Throws<InputError>(()=> {
-                new Project(dto);
+                new Project(dto, new Application.DTOs.Local.UserDTO { });
             });
         }
     }

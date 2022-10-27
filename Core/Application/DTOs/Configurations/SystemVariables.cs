@@ -19,6 +19,7 @@ namespace Core.Application.DTOs.Configurations {
         public DBConfig MongoDB { get; set; }
         public ElasticSearch ElasticSearch { get; set; }
         public Redis Redis { get; set; }
+        public EmailParam EmailParam { get; set; }
     }
     public class DBConfig {
         public string server { get; set; }
@@ -26,6 +27,7 @@ namespace Core.Application.DTOs.Configurations {
         public string database { get; set; }
         public string username { get; set; }
         public string password { get; set; }
+        public string protocol { get; set; }
     }
     
     public class ElasticSearch {
@@ -55,5 +57,14 @@ namespace Core.Application.DTOs.Configurations {
     public class RedisHost {
         public string host { get; set; }
         public int port { get; set; }
+    }
+    public class EmailParam {
+        public string fromAddress { get; set; }
+        public string fromName { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
+        public string smtpServer { get; set; }
+        public int smtpPort { get; set; }
+        public bool bodyIsPlainText { get; set; } = false;
     }
 }

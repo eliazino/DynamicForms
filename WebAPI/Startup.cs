@@ -20,12 +20,15 @@ namespace WebAPI {
         public static SystemVariables appSettings;
         public Startup(IConfiguration configuration, IWebHostEnvironment env) {
             Configuration = configuration;
+            Console.WriteLine(env.EnvironmentName);
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
             string fileName = string.Concat("appsettings.", env.EnvironmentName, ".json");
+            string fileName2 = string.Concat("appsettings.overrides.json");
             builder.AddJsonFile(fileName, optional: true);
+            builder.AddJsonFile(fileName2, optional: true);
             Configuration = builder.Build();
             envr = env;
         }

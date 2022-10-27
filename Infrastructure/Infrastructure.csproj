@@ -1,20 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Communication.Email" Version="1.0.0-beta.1" />
     <PackageReference Include="Elasticsearch.Net" Version="7.13.2" />
     <PackageReference Include="FirebaseAdmin" Version="2.2.0" />
     <PackageReference Include="LinqKit" Version="1.1.24" />
-    <PackageReference Include="MailKit" Version="2.11.1" />
+    <PackageReference Include="MailKit" Version="3.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-    <PackageReference Include="MongoDB.Bson" Version="2.12.1" />
-    <PackageReference Include="MongoDB.Driver" Version="2.12.1" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.12.1" />
+    <PackageReference Include="MongoDB.Bson" Version="2.15.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.15.1" />
     <PackageReference Include="NEST" Version="7.13.2" />
     <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="8.0.5" />

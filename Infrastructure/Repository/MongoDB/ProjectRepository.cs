@@ -21,7 +21,17 @@ namespace Infrastructure.Repository.MongoDB {
             return await update(new { status = 1 }, condition);
         }
 
-        public async Task<List<Project>> getProject() {
+        public async Task<bool> updateProject(Project project) {
+            Expression<Func<Project, bool>> condition = F => F.id == project.id;
+            return await update(project, condition);
+        }
+
+        public async Task<List<Project>> getProject(List<string> projectID) {
+            Expression<Func<Project, bool>> condition = F => projectID.Contains(F.id);
+            return (List<Project>)await getByCondition(condition);
+        }
+
+        public async Task<List<Project>> getProject() {            
             return (List<Project>)await getAll();
         }
 

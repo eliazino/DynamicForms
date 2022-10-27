@@ -1,5 +1,7 @@
-﻿using Core.Application.DTOs.Request;
+﻿using Core.Application.DTOs.Local;
+using Core.Application.DTOs.Request;
 using Core.Application.DTOs.Response;
+using Core.Application.Interfaces.Auth;
 using Core.Application.Interfaces.Repository.MongoDB;
 using Core.Application.Interfaces.UseCases;
 using Core.Models.Entities;
@@ -21,11 +23,15 @@ namespace Core.Application.Services.UseCases {
         private readonly IFormDataRepository _formdata;
         private readonly IProjectRepository _project;
         private readonly ISchemaRepository _schema;
-        public FormCreatorUseCase(IFilterEntitiesRepository filterEnt, IFormDataRepository formdata, IProjectRepository project, ISchemaRepository schema) {
+        private readonly IIdentityMngr _identity;
+        private readonly IUserRepository _userRepo;
+        public FormCreatorUseCase(IFilterEntitiesRepository filterEnt, IFormDataRepository formdata, IProjectRepository project, ISchemaRepository schema, IIdentityMngr identity, IUserRepository user) {
             this._filterEnt = filterEnt;
             this._formdata = formdata;
             this._project = project;
             this._schema = schema;
+            this._identity = identity;
+            this._userRepo = user;
         }
 
         public async Task<RawResponse> addData(FormDataDTO dto) {
@@ -67,15 +73,28 @@ namespace Core.Application.Services.UseCases {
 
         public async Task<RawResponse> createProject(ProjectDTO dto) {
             ResponseFormat response = new ResponseFormat();
-            var entity = new Project(dto);
-            if (await _project.createProject(entity))
+            if (!_identity.valid)
+                return response.failed("Access Denied! Authentication is invalid");
+            var user = _identity.getProfile<UserDTO>();
+            var entity = new Project(dto, user);
+            if (await _project.createProject(entity)) {                
+                var userProfile = await _userRepo.getUser(user.email);
+                userProfile[0].addProject(entity.id);
+                await _userRepo.updateUser(userProfile[0]);
                 return response.success("Created Successfully", new { project = entity });
+            }                
             return response.failed("Could not create Project");
         }
 
         public async Task<RawResponse> createSchema(SchemaDTO dto) {
             ResponseFormat response = new ResponseFormat();
+            if (!_identity.valid)
+                return response.failed("Access Denied! Authentication is invalid");
+            var user = _identity.getProfile<UserDTO>();
             var entity = new Schema(dto);
+            var project = await _project.getProject(dto.projectID);
+            if (project.Count < 1 || !project[0].owners.Contains(user.email))
+                return response.failed("Invalid Schema. You have no right on this project ");
             if (!string.IsNullOrEmpty(dto.id)){
                 var schemaEnt = await _schema.getSchemaById(dto.id);
                 if (schemaEnt != null && schemaEnt.Count > 0) {
@@ -92,12 +111,23 @@ namespace Core.Application.Services.UseCases {
 
         public async Task<RawResponse> getData(DataFilterDTO filter) {
             ResponseFormat response = new ResponseFormat();
+            if (!_identity.valid)
+                return response.failed("Access Denied! Authentication is invalid");
+            var user = _identity.getProfile<UserDTO>();
+            var profile = await _userRepo.getUser(user.email);
+            var schema = await _schema.getSchemaById(filter.schemaID);
+            if (!profile[0].projects.Contains(schema[0].projectID))
+                return response.failed("Access Denied!");
             return response.success("Grabbed", new { data = await _formdata.getFormData(filter.schemaID, filter.filterBody) });
         }
 
         public async Task<RawResponse> getProject() {
             ResponseFormat response = new ResponseFormat();
-            return response.success("Grabbed", new { data = await _project.getProject() });
+            if (!_identity.valid)
+                return response.failed("Access Denied! Authentication is invalid");
+            var user = _identity.getProfile<UserDTO>();
+            var profile = await _userRepo.getUser(user.email);
+            return response.success("Grabbed", new { data = await _project.getProject(profile[0].projects.ToList()) });
         }
 
         public async Task<RawResponse> getSchemaByID(string schemaID) {
@@ -110,7 +140,7 @@ namespace Core.Application.Services.UseCases {
                 if (string.IsNullOrEmpty(schemaData.SchemaField[f].dataSource))
                     continue;
                 schemaData.SchemaField[f].data = await getDropDown(schemaData.SchemaField[f].dataSource);
-            }            
+            }
             return response.success("Grabbed", new { schema = schemaData });
         }
         public async Task<RawResponse> getFilterSchemaByID(string schemaID) {
