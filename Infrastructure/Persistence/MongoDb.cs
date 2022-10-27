@@ -30,7 +30,8 @@ namespace Infrastructure.Persistence {
             _config = config;
             string server = string.Concat(config.server);
             server = !string.IsNullOrEmpty(config.username) ? string.Concat(config.username, ":", config.password, "@", server) : server;
-            string _connectionString = string.Concat("mongodb+srv://", server);
+            string protocol = config.protocol ?? "mongodb://";
+            string _connectionString = string.Concat(protocol, server);
             _client = new MongoClient(_connectionString);
             _connect();
         }
