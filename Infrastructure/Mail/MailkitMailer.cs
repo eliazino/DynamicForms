@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Mail {
-    [RegisterAsSingleton]
+    [DoNotAutoRegister]
     public class MailkitMailer : IEmailService {
         private readonly EmailParam _param;
         public MailkitMailer(IOptionsMonitor<SystemVariables> config) {
