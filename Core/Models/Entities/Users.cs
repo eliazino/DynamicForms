@@ -14,14 +14,14 @@ namespace Core.Models.Entities {
         public Users(string email) {
             this.id = Cryptography.CharGenerator.genID(12, Cryptography.CharGenerator.characterSet.HEX_STRING);
             this.email = email;
-            this.code = Cryptography.CharGenerator.genID(6, Cryptography.CharGenerator.characterSet.HEX_STRING);
+            this.code = Cryptography.CharGenerator.genID(6, Cryptography.CharGenerator.characterSet.NUMERIC);
             this.expiry = Utilities.getTodayDate().unixTimestamp + (60 * 20);
         }
         public Users() { }
         public void newLogin() {
             if (string.IsNullOrEmpty(this.email))
                 throw new LogicError("Attempt to create login for invalid user failed");
-            this.code = Cryptography.CharGenerator.genID(6, Cryptography.CharGenerator.characterSet.HEX_STRING);
+            this.code = Cryptography.CharGenerator.genID(6, Cryptography.CharGenerator.characterSet.NUMERIC);
             this.expiry = Utilities.getTodayDate().unixTimestamp + (60 * 20);
         }
         public void addProject(string projectID) {
