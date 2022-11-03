@@ -75,9 +75,9 @@ namespace Core.Application.Services.UseCases {
                 } else {
                     await _userRepo.createUser(userAcc);
                 }                
-                string message = "<blockquote><h3>Use the code below to complete your login:</h3><h5>"+userAcc.code+"</h5></blockquote>";
+                string message = "<blockquote><h3>Use the code below to complete your login:</h3><h4>"+userAcc.code+"</h4></blockquote>";
                 await _mailService.send(new MailEnvelope { body = message, subject = "Login to your OpenForms Account", toAddress = new string[] { email }, toName = new string[] { email } });
-                return response.success("Please check your email for your limited use password", new { code = userAcc.code });
+                return response.success("Please check your email for your limited use password", new { code = string.Empty });
             }            
             if (user.Count < 1)
                 return response.failed("Invalid request. Account not found");
