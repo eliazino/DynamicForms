@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Mail {
-    [RegisterAsSingleton]
+    [DoNotAutoRegister]
     public class AzureComService : IEmailService {
         private EmailClient _client;
         private readonly EmailParam _emailconfig;

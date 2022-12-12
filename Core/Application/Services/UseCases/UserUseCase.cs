@@ -1,6 +1,7 @@
 ﻿using Core.Application.DTOs.Configurations;
 using Core.Application.DTOs.Local;
 using Core.Application.DTOs.Response;
+using Core.Application.Interfaces;
 using Core.Application.Interfaces.Auth;
 using Core.Application.Interfaces.Mail;
 using Core.Application.Interfaces.Repository.MongoDB;
@@ -22,11 +23,15 @@ namespace Core.Application.Services.UseCases {
         private readonly IIdentityMngr _identity;
         private readonly IProjectRepository _project;
         private readonly IEmailService _mailService;
-        public UserUseCase(IUserRepository user, IOptionsMonitor<SystemVariables> sysVar, IIdentityMngr identity, IProjectRepository projectRepo, IEmailService mail) {
+        private readonly ITermii _termii;
+        private readonly SystemVariables _sysVar;
+        public UserUseCase(IUserRepository user, IOptionsMonitor<SystemVariables> sysVar, IIdentityMngr identity, IProjectRepository projectRepo, IEmailService mail, ITermii _termii) {
             this._userRepo = user;
             this._identity = identity;
             this._project = projectRepo;
             this._mailService = mail;
+            this._termii = _termii;
+            this._sysVar = sysVar.CurrentValue;
         }
         public async Task<RawResponse> inviteToProject(string email, string projectID, bool owner = false) {
             ResponseFormat response = new ResponseFormat();
@@ -74,9 +79,14 @@ namespace Core.Application.Services.UseCases {
                     await _userRepo.updateUser(userAcc);
                 } else {
                     await _userRepo.createUser(userAcc);
-                }                
-                string message = "<blockquote><h3>Use the code below to complete your login:</h3><h4>"+userAcc.code+"</h4></blockquote>";
-                await _mailService.send(new MailEnvelope { body = message, subject = "Login to your OpenForms Account", toAddress = new string[] { email }, toName = new string[] { email } });
+                }
+                if (_sysVar.TermiiConfig.enableForOTP) {
+                    if (!await _termii.sendMailOTP(userAcc.code, email))
+                        return response.failed("An error occured! Mail not sent");
+                } else {
+                    string message = "<blockquote><h3>Use the code below to complete your login:</h3><h4>" + userAcc.code + "</h4></blockquote>";
+                    await _mailService.send(new MailEnvelope { body = message, subject = "Login to your OpenForms Account", toAddress = new string[] { email }, toName = new string[] { email } });                    
+                }
                 return response.success("Please check your email for your limited use password", new { code = string.Empty });
             }            
             if (user.Count < 1)

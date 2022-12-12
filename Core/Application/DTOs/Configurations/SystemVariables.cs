@@ -20,6 +20,7 @@ namespace Core.Application.DTOs.Configurations {
         public ElasticSearch ElasticSearch { get; set; }
         public Redis Redis { get; set; }
         public EmailParam EmailParam { get; set; }
+        public TermiiConfig TermiiConfig { get; set; }
     }
     public class DBConfig {
         public string server { get; set; }
@@ -39,6 +40,12 @@ namespace Core.Application.DTOs.Configurations {
     public class BasicAuthentication {
         public string username { get; set; }
         public string password { get; set; }
+    }
+    public class TermiiConfig {
+        public string api_key { get; set; }
+        public string email_configuration_id { get; set; }
+        public string url { get; set; }
+        public bool enableForOTP { get; set; } = false;
     }
     public class ApiKeyAuthentication {
         public string id { get; set; }
